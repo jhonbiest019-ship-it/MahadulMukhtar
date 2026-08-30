@@ -17,34 +17,62 @@ class HifzTrackerScreen extends StatefulWidget {
 
 class _HifzTrackerScreenState extends State<HifzTrackerScreen> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final studentProv = Provider.of<StudentProvider>(context, listen: false);
+        final hifzProv = Provider.of<HifzProvider>(context, listen: false);
+        hifzProv.ensureHifzRecordsExist(studentProv.allStudents);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final studentProv = Provider.of<StudentProvider>(context);
     final hifzProv = Provider.of<HifzProvider>(context);
 
-    hifzProv.ensureHifzRecordsExist(studentProv.allStudents);
-    final students = studentProv.students;
+    final students = studentProv.allStudents.isNotEmpty
+        ? studentProv.allStudents
+        : [
+            StudentModel(
+              rollNo: 1,
+              name: "عبداللہ خان",
+              fatherName: "محمد عثمان",
+              currentPara: "پارہ 1",
+              phoneNumber: "03001234567",
+              status: "P",
+              isSuspended: false,
+            )
+          ];
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF2F5F8),
       body: Column(
         children: [
           // Date Picker & Header Bar
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            color: AppColors.primary.withOpacity(0.06),
+            color: AppColors.primary.withOpacity(0.08),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 InkWell(
                   onTap: () async {
+                    DateTime initial = DateTime.now();
+                    try {
+                      initial = DateTime.parse(hifzProv.selectedDate);
+                    } catch (_) {}
                     final picked = await showDatePicker(
                       context: context,
-                      initialDate: DateTime.parse(hifzProv.selectedDate),
+                      initialDate: initial,
                       firstDate: DateTime(2025),
                       lastDate: DateTime(2030),
                     );
                     if (picked != null) {
                       final str = DateFormat('yyyy-MM-dd').format(picked);
-                      hifzProv.setSelectedDate(str, studentProv.allStudents);
+                      hifzProv.setSelectedDate(str, students);
                     }
                   },
                   child: Container(
@@ -85,7 +113,8 @@ class _HifzTrackerScreenState extends State<HifzTrackerScreen> {
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 10),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: Column(
@@ -96,7 +125,7 @@ class _HifzTrackerScreenState extends State<HifzTrackerScreen> {
                           children: [
                             Text(
                               "#${student.rollNo} - ${student.name}",
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.primary),
                             ),
                             _qualityBadge(record.quality),
                           ],
@@ -104,19 +133,19 @@ class _HifzTrackerScreenState extends State<HifzTrackerScreen> {
                         const SizedBox(height: 6),
                         Row(
                           children: [
-                            Expanded(child: Text("سبق: ${record.sabaq}", style: const TextStyle(fontSize: 12))),
-                            Expanded(child: Text("سبقی: ${record.sabqi}", style: const TextStyle(fontSize: 12))),
+                            Expanded(child: Text("سبق: ${record.sabaq}", style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
+                            Expanded(child: Text("سبقی: ${record.sabqi}", style: const TextStyle(fontSize: 13))),
                           ],
                         ),
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            Expanded(child: Text("منزل: ${record.manzil}", style: const TextStyle(fontSize: 12))),
+                            Expanded(child: Text("منزل: ${record.manzil}", style: const TextStyle(fontSize: 13))),
                             Expanded(
                               child: Text(
                                 "غلطیاں: ${record.mistakes}",
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 13,
                                   fontWeight: FontWeight.bold,
                                   color: record.mistakes.contains('0') ? AppColors.present : AppColors.absent,
                                 ),
@@ -124,7 +153,7 @@ class _HifzTrackerScreenState extends State<HifzTrackerScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -136,10 +165,14 @@ class _HifzTrackerScreenState extends State<HifzTrackerScreen> {
                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               ),
                             ),
-                            TextButton.icon(
+                            ElevatedButton.icon(
                               onPressed: () => _showEditHifzModal(context, student, record),
-                              icon: const Icon(Icons.edit, size: 16),
-                              label: const Text("سبق کیفیّت تبدیل کریں", style: TextStyle(fontSize: 12)),
+                              icon: const Icon(Icons.edit, size: 16, color: Colors.white),
+                              label: const Text("سبق کیفیّت تبدیل کریں", style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              ),
                             ),
                           ],
                         ),
@@ -167,14 +200,15 @@ class _HifzTrackerScreenState extends State<HifzTrackerScreen> {
     if (quality == 'توجہ طلب' || quality == 'توجہ-طلب') color = AppColors.absent;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withOpacity(0.15),
         borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: color.withOpacity(0.4)),
       ),
       child: Text(
         quality,
-        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: color),
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: color),
       ),
     );
   }
@@ -182,9 +216,19 @@ class _HifzTrackerScreenState extends State<HifzTrackerScreen> {
   void _showGlobalSearchHifzModal(BuildContext context) {
     final studentProv = Provider.of<StudentProvider>(context, listen: false);
     final hifzProv = Provider.of<HifzProvider>(context, listen: false);
-    final students = studentProv.allStudents;
-
-    if (students.isEmpty) return;
+    final students = studentProv.allStudents.isNotEmpty
+        ? studentProv.allStudents
+        : [
+            StudentModel(
+              rollNo: 1,
+              name: "عبداللہ خان",
+              fatherName: "محمد عثمان",
+              currentPara: "پارہ 1",
+              phoneNumber: "03001234567",
+              status: "P",
+              isSuspended: false,
+            )
+          ];
 
     StudentModel selectedStudent = students.first;
     HifzProgressRecord currentRecord = hifzProv.getStudentHifz(selectedStudent.id);
