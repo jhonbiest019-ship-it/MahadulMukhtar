@@ -125,13 +125,23 @@ class _HifzTrackerScreenState extends State<HifzTrackerScreen> {
                           ],
                         ),
                         const SizedBox(height: 8),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: TextButton.icon(
-                            onPressed: () => _showEditHifzModal(context, student, record),
-                            icon: const Icon(Icons.edit, size: 16),
-                            label: const Text("سبق کیفیّت تبدیل کریں"),
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            OutlinedButton.icon(
+                              onPressed: () => _showStudentSlipDialog(context, student, record, hifzProv.selectedDate),
+                              icon: const Icon(Icons.print, size: 16),
+                              label: const Text("🖨️ سلپ پرنٹ", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              ),
+                            ),
+                            TextButton.icon(
+                              onPressed: () => _showEditHifzModal(context, student, record),
+                              icon: const Icon(Icons.edit, size: 16),
+                              label: const Text("سبق کیفیّت تبدیل کریں", style: TextStyle(fontSize: 12)),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -463,6 +473,43 @@ class _HifzTrackerScreenState extends State<HifzTrackerScreen> {
               ),
             );
           },
+        );
+      },
+    );
+  }
+
+  void _showStudentSlipDialog(BuildContext context, StudentModel student, HifzProgressRecord record, String dateStr) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Text("Al Mukhtar Islamic Institute", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("روزانہ طالب علم حاضری و کارکردگی سلپ", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey.shade700, fontSize: 13)),
+              const Divider(),
+              Text("تاریخ: $dateStr", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 4),
+              Text("طالب علم: #${student.rollNo} - ${student.name}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+              Text("ولدیت: ${student.fatherName}", style: const TextStyle(fontSize: 12)),
+              Text("واٹس ایپ: ${student.phoneNumber}", style: const TextStyle(fontSize: 12)),
+              const Divider(),
+              Text("آج کا سبق: ${record.sabaq}", style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+              Text("سبقی: ${record.sabqi}", style: const TextStyle(fontSize: 12)),
+              Text("منزل: ${record.manzil}", style: const TextStyle(fontSize: 12)),
+              Text("غلطیاں: ${record.mistakes}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.absent)),
+              Text("کیفیت: ${record.quality}", style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.primary)),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text("بند کریں"),
+            ),
+          ],
         );
       },
     );
