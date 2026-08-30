@@ -15,15 +15,19 @@ class WhatsAppService {
 
     final String message = 
         "محترم والدین!\n"
-        "السلام علیکم، آپ کا بچہ *$studentName* آج مدرسے سے غیر حاضر ہے۔ برائے مہربانی غیر حاضری کی وجہ سے مطلع فرمائیں۔شکریہ!\n\n"
+        "السلام علیکم، آپ کا بچہ $studentName آج مدرسے سے غیر حاضر ہے۔ برائے مہربانی غیر حاضری کی وجہ سے مطلع فرمائیں۔شکریہ!\n\n"
         "انتظامیہ\n"
         "Al Mukhtar Islamic Institute";
 
     final Uri url = Uri.parse("https://wa.me/$cleanPhone?text=${Uri.encodeComponent(message)}");
 
-    if (await canLaunchUrl(url)) {
-      return await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
+    try {
+      if (await canLaunchUrl(url)) {
+        return await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else {
+        return await launchUrl(url, mode: LaunchMode.externalApplication);
+      }
+    } catch (e) {
       return false;
     }
   }
