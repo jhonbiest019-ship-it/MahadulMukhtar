@@ -2,7 +2,7 @@
 <html lang="ur" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Al Mukhtar Islamic Institute</title>
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,6 +36,7 @@
       margin: 0;
       padding: 0;
       font-family: 'Outfit', 'Noto Nastaliq Urdu', system-ui, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -49,17 +50,19 @@
     header {
       background: linear-gradient(135deg, var(--primary-dark), var(--primary));
       color: white;
-      padding: 0.85rem 1.5rem;
+      padding: 0.85rem 1.25rem;
       box-shadow: 0 4px 14px rgba(25, 67, 110, 0.25);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .header-brand {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       cursor: pointer;
       user-select: none;
       transition: opacity 0.2s;
@@ -70,10 +73,10 @@
     }
 
     .header-logo {
-      width: 60px;
-      height: 60px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
-      border: 3px solid #FFFFFF;
+      border: 2.5px solid #FFFFFF;
       object-fit: cover;
       object-position: center;
       box-shadow: 0 4px 12px rgba(0,0,0,0.25);
@@ -82,14 +85,22 @@
     }
 
     .header-brand h1 {
-      font-size: 1.55rem;
+      font-size: 1.35rem;
       font-weight: 700;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
+      line-height: 1.2;
     }
 
     .header-brand p {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       opacity: 0.85;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .cloud-badge {
@@ -97,11 +108,12 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
       padding: 4px 10px;
       border-radius: 20px;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 600;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      white-space: nowrap;
     }
 
     .cloud-dot {
@@ -112,24 +124,34 @@
       box-shadow: 0 0 6px #10B981;
     }
 
+    /* MOBILE SMOOTH SCROLLING TABS */
     .nav-tabs {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       background: var(--surface);
-      padding: 8px 1.5rem;
+      padding: 8px 1rem;
       border-bottom: 1px solid var(--bg);
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
     }
 
     .tab-btn {
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 8px;
       border: none;
       background: transparent;
       font-weight: 600;
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       color: var(--muted);
+      white-space: nowrap;
       transition: all 0.2s;
+      flex-shrink: 0;
     }
 
     .tab-btn.active {
@@ -141,7 +163,7 @@
     .container {
       max-width: 1250px;
       margin: 0 auto;
-      padding: 1.5rem;
+      padding: 1rem;
       width: 100%;
       flex: 1;
     }
@@ -156,15 +178,15 @@
 
     .dashboard-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.85rem;
+      margin-bottom: 1.25rem;
     }
 
     .card {
       background: var(--surface);
       border-radius: 14px;
-      padding: 1.25rem;
+      padding: 1rem;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       border: 1px solid rgba(0,0,0,0.04);
       margin-bottom: 1rem;
@@ -173,52 +195,56 @@
     .kpi-card {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.85rem;
     }
 
     .kpi-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
+      flex-shrink: 0;
     }
 
     .kpi-val {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       font-weight: 700;
+      line-height: 1.1;
     }
 
     .kpi-title {
-      font-size: 0.85rem;
+      font-size: 0.78rem;
       color: var(--muted);
     }
 
     .action-bar {
       display: flex;
-      gap: 1rem;
+      gap: 0.75rem;
       flex-wrap: wrap;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       background: var(--surface);
-      padding: 1rem;
+      padding: 0.85rem;
       border-radius: 12px;
       align-items: center;
       justify-content: space-between;
     }
 
     .btn {
-      padding: 0.65rem 1.25rem;
+      padding: 0.6rem 1rem;
       border-radius: 8px;
       border: none;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      font-size: 0.95rem;
+      justify-content: center;
+      gap: 6px;
+      font-size: 0.88rem;
       transition: opacity 0.2s;
+      min-height: 40px;
     }
 
     .btn:hover { opacity: 0.9; }
@@ -236,18 +262,20 @@
       border-radius: 14px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.06);
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       text-align: right;
+      min-width: 600px;
     }
 
     th, td {
-      padding: 0.85rem 1rem;
+      padding: 0.75rem 0.85rem;
       border-bottom: 1px solid var(--bg);
-      font-size: 0.95rem;
+      font-size: 0.88rem;
     }
 
     th {
@@ -255,6 +283,7 @@
       color: white;
       font-weight: 700;
       letter-spacing: 0.3px;
+      white-space: nowrap;
     }
 
     tr:hover {
@@ -275,21 +304,25 @@
       direction: ltr;
       display: inline-block;
       font-family: monospace;
+      white-space: nowrap;
     }
 
     .status-badge-group {
       display: flex;
-      gap: 4px;
+      gap: 3px;
+      flex-wrap: wrap;
     }
 
     .badge-btn {
-      padding: 4px 8px;
+      padding: 4px 6px;
       border-radius: 6px;
       border: 1px solid #ccc;
       background: white;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
+      min-width: 38px;
+      text-align: center;
     }
 
     .badge-btn.active-P { background: var(--present); color: white; border-color: var(--present); }
@@ -300,8 +333,9 @@
     .quality-tag {
       padding: 3px 8px;
       border-radius: 6px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: bold;
+      white-space: nowrap;
     }
     .q-ممتاز { background: rgba(5,150,105,0.15); color: var(--present); }
     .q-عمدہ { background: rgba(37,99,235,0.15); color: var(--late); }
@@ -310,7 +344,7 @@
 
     .action-btn-group {
       display: flex;
-      gap: 6px;
+      gap: 4px;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -320,11 +354,12 @@
       border-radius: 6px;
       border: none;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
       display: inline-flex;
       align-items: center;
       gap: 4px;
+      white-space: nowrap;
     }
 
     .modal-overlay {
@@ -336,14 +371,14 @@
       z-index: 9999;
       align-items: center;
       justify-content: center;
-      padding: 1rem;
+      padding: 0.85rem;
     }
     .modal-overlay.open { display: flex; }
 
     .modal-box {
       background: white;
       width: 100%;
-      max-width: 650px;
+      max-width: 600px;
       max-height: 90vh;
       display: flex;
       flex-direction: column;
@@ -361,29 +396,29 @@
     .modal-header {
       background: linear-gradient(135deg, var(--primary-dark), var(--primary));
       color: white;
-      padding: 1rem 1.25rem;
+      padding: 0.85rem 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .modal-header h3 {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .close-btn {
       background: rgba(255,255,255,0.15);
       border: none;
       color: white;
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       cursor: pointer;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -393,34 +428,35 @@
     .close-btn:hover { background: rgba(220,38,38,0.8); }
 
     .modal-body {
-      padding: 1.25rem;
+      padding: 1rem;
       overflow-y: auto;
       flex: 1;
     }
 
     .modal-footer {
-      padding: 1rem 1.25rem;
+      padding: 0.85rem 1rem;
       background: var(--bg);
       border-top: 1px solid #E5E7EB;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
     }
 
-    .form-group { margin-bottom: 1rem; }
+    .form-group { margin-bottom: 0.85rem; }
     .form-group label {
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       color: var(--text);
     }
     .form-control {
       width: 100%;
-      padding: 10px 12px;
+      padding: 8px 10px;
       border: 1.5px solid #D1D5DB;
       border-radius: 8px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       transition: border-color 0.2s;
     }
     .form-control:focus { outline: none; border-color: var(--primary); }
@@ -436,12 +472,13 @@
     }
 
     .search-result-item {
-      padding: 8px 12px;
+      padding: 8px 10px;
       cursor: pointer;
       border-bottom: 1px solid #F3F4F6;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: 0.85rem;
     }
     .search-result-item:hover {
       background: rgba(25, 67, 110, 0.08);
@@ -449,23 +486,24 @@
 
     .range-selector-box {
       display: flex;
-      gap: 10px;
-      margin-bottom: 1rem;
+      gap: 6px;
+      margin-bottom: 0.85rem;
       background: #F3F4F6;
-      padding: 8px;
+      padding: 6px;
       border-radius: 10px;
     }
 
     .range-opt {
       flex: 1;
       text-align: center;
-      padding: 8px;
+      padding: 6px 4px;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.78rem;
       background: transparent;
       border: none;
+      white-space: nowrap;
     }
 
     .range-opt.active {
@@ -477,14 +515,48 @@
       background: var(--primary-dark);
       color: white;
       text-align: center;
-      padding: 1.25rem;
+      padding: 1rem;
       margin-top: auto;
     }
 
     footer p {
       font-weight: 700;
       color: var(--primary-light);
-      font-size: 0.95rem;
+      font-size: 0.88rem;
+    }
+
+    /* SPECIFIC MOBILE MEDIA QUERIES */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .action-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .action-bar > div {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .btn {
+        width: 100%;
+      }
+      .modal-footer {
+        flex-direction: column-reverse;
+      }
+      .modal-footer .btn {
+        width: 100%;
+      }
+      .dashboard-grid {
+        grid-template-columns: 1fr 1fr;
+      }
     }
   </style>
 </head>
@@ -497,25 +569,25 @@
         <p>ڈیجیٹل حاضری و حفظ سبق، سبقی، منزل ٹریکر</p>
       </div>
     </div>
-    <div style="display: flex; align-items: center; gap: 10px;">
+    <div class="header-actions">
       <!-- Direct APK Download Button -->
-      <a href="/AlMukhtar_Institute.apk" class="btn btn-accent" download style="text-decoration: none; padding: 6px 12px; font-size: 0.85rem;" title="موبائل فون میں ایپ انسٹال کرنے کے لیے APK ڈاؤن لوڈ کریں">
-        📥 Android APK Download (ایپ ڈاؤن لوڈ کریں)
+      <a href="/AlMukhtar_Institute.apk" class="btn btn-accent" download style="text-decoration: none; padding: 5px 10px; font-size: 0.8rem;" title="موبائل فون میں ایپ انسٹال کرنے کے لیے APK ڈاؤن لوڈ کریں">
+        📥 APK Download
       </a>
 
       <div class="cloud-badge" id="firebaseSyncBadge">
         <span class="cloud-dot"></span>
-        <span id="firebaseSyncText">🔥 Live Cloud Auto-Synced</span>
+        <span id="firebaseSyncText">🔥 Live Cloud Sync</span>
       </div>
-      <input type="date" id="datePicker" class="form-control" style="width: auto; padding: 5px 10px;" onchange="onDateChanged(this.value)">
+      <input type="date" id="datePicker" class="form-control" style="width: auto; padding: 4px 8px; font-size: 0.8rem;" onchange="onDateChanged(this.value)">
     </div>
   </header>
 
-  <!-- Navigation Tabs -->
+  <!-- Navigation Tabs with Mobile Touch Smooth Scroll -->
   <div class="nav-tabs">
-    <button class="tab-btn active" id="btn-tab-dashboard" onclick="switchTab('dashboard')">📋 حاضری ڈیش بورڈ (Home)</button>
-    <button class="tab-btn" id="btn-tab-hifz" onclick="switchTab('hifz')">📖 روزانہ سبق، سبقی، منزل و کیفیت</button>
-    <button class="tab-btn" id="btn-tab-reports" onclick="switchTab('reports')">📊 رپورٹس و تاریخ (History)</button>
+    <button class="tab-btn active" id="btn-tab-dashboard" onclick="switchTab('dashboard')">📋 حاضری ڈیش بورڈ</button>
+    <button class="tab-btn" id="btn-tab-hifz" onclick="switchTab('hifz')">📖 سبق، سبقی، منزل و کیفیت</button>
+    <button class="tab-btn" id="btn-tab-reports" onclick="switchTab('reports')">📊 رپورٹس و تاریخ Log</button>
   </div>
 
   <div class="container">
@@ -553,14 +625,14 @@
       </div>
 
       <div class="action-bar">
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <button class="btn btn-primary" onclick="showAddStudentModal()">➕ نیا طالب علم (Add Student)</button>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn btn-primary" onclick="showAddStudentModal()">➕ نیا طالب علم (Add)</button>
           <button class="btn btn-present" onclick="markAllPresent()">✔️ سب کو حاضر کریں</button>
           <button class="btn btn-whatsapp" onclick="sendAllWhatsApp()">📱 واٹس ایپ الرٹس بھیجیں</button>
         </div>
-        <div style="display: flex; gap: 10px; align-items: center;">
-          <a href="/AlMukhtar_Institute.apk" class="btn btn-whatsapp" download style="text-decoration: none;">📥 APK Direct Download</a>
-          <button class="btn btn-outline" onclick="window.print()">🖨️ پی ڈی ایف پرنٹ کریں</button>
+        <div style="display: flex; gap: 8px;">
+          <a href="/AlMukhtar_Institute.apk" class="btn btn-whatsapp" download style="text-decoration: none;">📥 APK Download</a>
+          <button class="btn btn-outline" onclick="window.print()">🖨️ پرنٹ</button>
         </div>
       </div>
 
@@ -568,10 +640,10 @@
         <table>
           <thead>
             <tr>
-              <th>رول نمبر</th>
+              <th>رول #</th>
               <th>طالب علم کا نام</th>
               <th>ولدیت</th>
-              <th>رجسٹرڈ واٹس ایپ نمبر</th>
+              <th>واٹس ایپ نمبر</th>
               <th>موجودہ پارہ</th>
               <th>حاضری status</th>
               <th>اقدامات (Actions)</th>
@@ -586,10 +658,10 @@
     <div id="tab-hifz" class="tab-content">
       <div class="action-bar">
         <div>
-          <h2 style="font-size: 1.2rem; color: var(--primary);">روزانہ سبق، سبقی، منزل اور غلطیوں کا ریکارڈ</h2>
-          <p style="font-size: 0.85rem; color: var(--muted);">منتخب تاریخ: <strong id="hifzDateDisplay">2026-08-30</strong> (تمام ریکارڈز Firebase Cloud پر آن لائن خودکار محفوط ہو جاتے ہیں)</p>
+          <h2 style="font-size: 1.1rem; color: var(--primary);">روزانہ سبق، سبقی، منزل اور غلطیوں کا ریکارڈ</h2>
+          <p style="font-size: 0.8rem; color: var(--muted);">منتخب تاریخ: <strong id="hifzDateDisplay">2026-08-30</strong> (Firebase Cloud Auto-Synced)</p>
         </div>
-        <div style="display: flex; gap: 8px;">
+        <div style="display: flex; gap: 6px;">
           <button class="btn btn-primary" onclick="showAddHifzModal()">📝 سبق درج / اپڈیٹ کریں</button>
           <button class="btn btn-whatsapp" onclick="showShareHifzReportModal()">📱 PDF و واٹس ایپ ہسٹری شیئر</button>
         </div>
@@ -616,10 +688,10 @@
 
     <!-- TAB 3: REPORTS & DAILY HISTORY -->
     <div id="tab-reports" class="tab-content">
-      <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+      <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
         <div>
-          <h2 style="color: var(--primary); margin-bottom: 4px;">روزانہ کارکردگی ہسٹری (Date Log)</h2>
-          <p style="color: var(--muted); font-size: 0.9rem;">ہر گزرتی تاریخ کا سبق، سبقی، منزل، حاضری اور غلطیوں کا مکمل تاریچی ریکارڈ محفوط ہے۔</p>
+          <h2 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 2px;">روزانہ کارکردگی ہسٹری (Date Log)</h2>
+          <p style="color: var(--muted); font-size: 0.82rem;">سبق، سبقی، منزل، حاضری اور غلطیوں کا مکمل تاریچی ریکارڈ۔</p>
         </div>
         <button class="btn btn-whatsapp" onclick="showShareHifzReportModal()">📱 واٹس ایپ رپورٹ (PDF/Text)</button>
       </div>
@@ -648,7 +720,7 @@
   <div class="modal-overlay" id="hifzModal" onclick="if(event.target === this) closeHifzModal()">
     <div class="modal-box">
       <div class="modal-header">
-        <h3>📖 روزانہ سبق، سبقی و منزل اندراج (Sabaq Record)</h3>
+        <h3>📖 روزانہ سبق، سبقی و منزل اندراج</h3>
         <button class="close-btn" onclick="closeHifzModal()" title="بند کریں">✖</button>
       </div>
       
@@ -666,23 +738,23 @@
         </div>
 
         <!-- Student Info Card Summary -->
-        <div id="selectedStudentSummaryCard" class="card" style="background: rgba(25, 67, 110, 0.05); padding: 0.8rem; margin-bottom: 1rem; border-radius: 10px;">
+        <div id="selectedStudentSummaryCard" class="card" style="background: rgba(25, 67, 110, 0.05); padding: 0.7rem; margin-bottom: 0.85rem; border-radius: 10px;">
           <div style="font-weight: 700; color: var(--primary);" id="cardStudentName">عبداللہ خان (رول #1)</div>
-          <div style="font-size: 0.85rem; color: var(--muted);" id="cardStudentDetails">ولدیت: محمد عثمان | پارہ 1 | واٹس ایپ: 03001234567</div>
+          <div style="font-size: 0.8rem; color: var(--muted);" id="cardStudentDetails">ولدیت: محمد عثمان | پارہ 1 | واٹس ایپ: 03001234567</div>
         </div>
 
         <div class="form-group">
-          <label>آج کا سبق (Sabaq - e.g. البقرۃ آیت 1-15 یا 10 سطریں):</label>
+          <label>آج کا سبق (Sabaq):</label>
           <input type="text" id="modalSabaq" class="form-control" placeholder="مثلاً: پارہ 2، 10 سطریں">
         </div>
 
         <div class="form-group">
-          <label>سبقی (Sabqi - e.g. پچھلا پاؤ / آدھا پارہ):</label>
+          <label>سبقی (Sabqi):</label>
           <input type="text" id="modalSabqi" class="form-control" placeholder="مثلاً: پارہ 1 پاؤ 4">
         </div>
 
         <div class="form-group">
-          <label>منزل (Manzil - e.g. پورا 1 پارہ):</label>
+          <label>منزل (Manzil):</label>
           <input type="text" id="modalManzil" class="form-control" placeholder="مثلاً: پارہ 15">
         </div>
 
@@ -703,7 +775,7 @@
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-outline" onclick="closeHifzModal()">⬅️ واپسی / منسوخ</button>
+        <button class="btn btn-outline" onclick="closeHifzModal()">⬅️ منسوخ</button>
         <button class="btn btn-primary" onclick="saveHifzEntry()">✔️ محفوظ کریں</button>
       </div>
     </div>
@@ -725,34 +797,34 @@
         <div class="form-group">
           <label>رپورٹ کی میعاد (Select Range Mode):</label>
           <div class="range-selector-box">
-            <button class="range-opt active" id="opt-weekly" onclick="selectReportRange('weekly')">📅 ہفتہ وار (Last 7 Days)</button>
-            <button class="range-opt" id="opt-monthly" onclick="selectReportRange('monthly')">🗓️ ماہانہ (Last 30 Days)</button>
-            <button class="range-opt" id="opt-custom" onclick="selectReportRange('custom')">⚙️ کسٹم (Custom Dates)</button>
+            <button class="range-opt active" id="opt-weekly" onclick="selectReportRange('weekly')">📅 ہفتہ وار</button>
+            <button class="range-opt" id="opt-monthly" onclick="selectReportRange('monthly')">🗓️ ماہانہ</button>
+            <button class="range-opt" id="opt-custom" onclick="selectReportRange('custom')">⚙️ کسٹم</button>
           </div>
         </div>
 
-        <div id="customDateRangeBox" style="display: none; gap: 10px; margin-bottom: 1rem;">
+        <div id="customDateRangeBox" style="display: none; gap: 8px; margin-bottom: 0.85rem;">
           <div style="flex: 1;">
-            <label style="font-size: 0.85rem; font-weight: 600;">تاریخ سے (From):</label>
+            <label style="font-size: 0.8rem; font-weight: 600;">تاریخ سے:</label>
             <input type="date" id="reportFromDate" class="form-control">
           </div>
           <div style="flex: 1;">
-            <label style="font-size: 0.85rem; font-weight: 600;">تاریخ تک (To):</label>
+            <label style="font-size: 0.8rem; font-weight: 600;">تاریخ تک:</label>
             <input type="date" id="reportToDate" class="form-control">
           </div>
         </div>
 
-        <div class="card" style="background: #F9FAFB; padding: 1rem; border-radius: 10px; margin-top: 10px;">
-          <h4 style="font-size: 0.95rem; color: var(--primary); margin-bottom: 6px;">پیش نظارہ رپورٹ (Report Summary):</h4>
-          <div id="reportSummaryPreview" style="font-size: 0.85rem; color: var(--text); line-height: 1.5; white-space: pre-line;"></div>
+        <div class="card" style="background: #F9FAFB; padding: 0.85rem; border-radius: 10px; margin-top: 8px;">
+          <h4 style="font-size: 0.88rem; color: var(--primary); margin-bottom: 4px;">پیش نظارہ رپورٹ (Report Summary):</h4>
+          <div id="reportSummaryPreview" style="font-size: 0.8rem; color: var(--text); line-height: 1.5; white-space: pre-line;"></div>
         </div>
       </div>
 
       <div class="modal-footer">
         <button class="btn btn-outline" onclick="closeShareHifzReportModal()">⬅️ واپسی</button>
-        <div style="display: flex; gap: 8px;">
-          <button class="btn btn-whatsapp" onclick="sendHifzWhatsAppReport()">📱 واٹس ایپ پر بھیجیں</button>
-          <button class="btn btn-primary" onclick="printHifzPDFReport()">🖨️ PDF پرنٹ / پرنٹ کریں</button>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn btn-whatsapp" onclick="sendHifzWhatsAppReport()">📱 واٹس ایپ</button>
+          <button class="btn btn-primary" onclick="printHifzPDFReport()">🖨️ PDF پرنٹ</button>
         </div>
       </div>
     </div>
@@ -762,7 +834,7 @@
   <div class="modal-overlay" id="addStudentModal" onclick="if(event.target === this) closeAddStudentModal()">
     <div class="modal-box">
       <div class="modal-header">
-        <h3>➕ نیا طالب علم شامل کریں (Add New Student)</h3>
+        <h3>➕ نیا طالب علم شامل کریں (Add Student)</h3>
         <button class="close-btn" onclick="closeAddStudentModal()" title="بند کریں">✖</button>
       </div>
       <div class="modal-body">
@@ -783,13 +855,13 @@
           <input type="text" id="addPara" class="form-control" placeholder="مثلاً: پارہ 1">
         </div>
         <div class="form-group">
-          <label>رجسٹرڈ واٹس ایپ نمبر (Registered WhatsApp Number):</label>
+          <label>رجسٹرڈ واٹس ایپ نمبر (WhatsApp Number):</label>
           <input type="text" id="addPhone" class="form-control" placeholder="مثلاً: 03001234567 یا +923001234567">
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-outline" onclick="closeAddStudentModal()">⬅️ واپسی / منسوخ</button>
-        <button class="btn btn-primary" onclick="saveNewStudent()">✔️ طالب علم شامل کریں</button>
+        <button class="btn btn-outline" onclick="closeAddStudentModal()">⬅️ منسوخ</button>
+        <button class="btn btn-primary" onclick="saveNewStudent()">✔️ شامل کریں</button>
       </div>
     </div>
   </div>
@@ -798,7 +870,7 @@
   <div class="modal-overlay" id="editStudentModal" onclick="if(event.target === this) closeEditStudentModal()">
     <div class="modal-box">
       <div class="modal-header">
-        <h3>✏️ طالب علم کی معلومات تبدیل کریں (Edit Student)</h3>
+        <h3>✏️ طالب علم کی معلومات تبدیل کریں (Edit)</h3>
         <button class="close-btn" onclick="closeEditStudentModal()" title="بند کریں">✖</button>
       </div>
       <div class="modal-body">
@@ -820,12 +892,12 @@
           <input type="text" id="editPara" class="form-control">
         </div>
         <div class="form-group">
-          <label>رجسٹرڈ واٹس ایپ نمبر (Registered WhatsApp Phone):</label>
+          <label>رجسٹرڈ واٹس ایپ نمبر (WhatsApp Phone):</label>
           <input type="text" id="editPhone" class="form-control">
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-outline" onclick="closeEditStudentModal()">⬅️ واپسی / منسوخ</button>
+        <button class="btn btn-outline" onclick="closeEditStudentModal()">⬅️ منسوخ</button>
         <button class="btn btn-primary" onclick="saveEditedStudent()">✔️ اپڈیٹ کریں</button>
       </div>
     </div>
@@ -862,20 +934,20 @@
     // Smooth Silent Background Firebase Cloud Sync Engine
     function syncToFirebaseCloud(collectionName, docId, data) {
       const badgeText = document.getElementById('firebaseSyncText');
-      if (badgeText) badgeText.innerText = "🔥 Syncing to Firebase...";
+      if (badgeText) badgeText.innerText = "🔥 Syncing...";
 
       if (isFirebaseReady && db) {
         db.collection(collectionName).doc(String(docId)).set(data, { merge: true })
           .then(() => {
-            if (badgeText) badgeText.innerText = "🔥 Live Cloud Auto-Synced";
+            if (badgeText) badgeText.innerText = "🔥 Live Cloud Sync";
           })
           .catch(() => {
-            if (badgeText) badgeText.innerText = "🔥 Saved (Cloud Ready)";
+            if (badgeText) badgeText.innerText = "🔥 Saved (Cloud)";
           });
       } else {
         localStorage.setItem(`firebase_sync_${collectionName}_${docId}`, JSON.stringify(data));
         setTimeout(() => {
-          if (badgeText) badgeText.innerText = "🔥 Live Cloud Auto-Synced";
+          if (badgeText) badgeText.innerText = "🔥 Live Cloud Sync";
         }, 300);
       }
     }
@@ -971,7 +1043,7 @@
 
         tr.innerHTML = `
           <td><strong>#${s.roll}</strong></td>
-          <td><strong>${s.name}</strong> ${s.isSuspended ? '<span style="color: var(--suspended); font-size: 0.8rem; font-weight: bold;">(معطل / Suspended)</span>' : ''}</td>
+          <td><strong>${s.name}</strong> ${s.isSuspended ? '<span style="color: var(--suspended); font-size: 0.75rem; font-weight: bold;">(معطل)</span>' : ''}</td>
           <td>${s.father}</td>
           <td><span class="phone-badge">📱 ${s.phone}</span></td>
           <td>${s.para}</td>
@@ -1029,7 +1101,7 @@
           <td><span style="color: ${rec.mistakes.includes('0') ? 'var(--present)' : 'var(--absent)'}; font-weight: bold;">${rec.mistakes}</span></td>
           <td><span class="quality-tag q-${rec.quality.replace(' ', '-')}">${rec.quality}</span></td>
           <td>
-            <button class="btn btn-outline" style="padding: 4px 8px; font-size: 0.8rem;" onclick="openEditHifzModal(${s.roll})">✏️ edit</button>
+            <button class="btn btn-outline" style="padding: 3px 6px; font-size: 0.78rem;" onclick="openEditHifzModal(${s.roll})">✏️ edit</button>
           </td>
         `;
         tbody.appendChild(tr);
