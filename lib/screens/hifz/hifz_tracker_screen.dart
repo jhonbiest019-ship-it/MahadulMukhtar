@@ -240,37 +240,39 @@ class _HifzTrackerScreenState extends State<HifzTrackerScreen> {
                     ),
 
                     if (searchResults.isNotEmpty)
-                      Container(
-                        maxHeight: 120,
-                        margin: const EdgeInsets.only(top: 4, bottom: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade300),
-                        ),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: searchResults.length,
-                          itemBuilder: (c, i) {
-                            final s = searchResults[i];
-                            return ListTile(
-                              dense: true,
-                              title: Text("${s.name} (#${s.rollNo})", style: const TextStyle(fontWeight: FontWeight.bold)),
-                              subtitle: Text("ولدیت: ${s.fatherName} | پارہ: ${s.currentPara}"),
-                              onTap: () {
-                                setModalState(() {
-                                  selectedStudent = s;
-                                  currentRecord = hifzProv.getStudentHifz(s.id);
-                                  sabaqCtrl.text = currentRecord.sabaq;
-                                  sabqiCtrl.text = currentRecord.sabqi;
-                                  manzilCtrl.text = currentRecord.manzil;
-                                  mistakesCtrl.text = currentRecord.mistakes;
-                                  selectedQuality = currentRecord.quality;
-                                  searchCtrl.clear();
-                                });
-                              },
-                            );
-                          },
+                      SizedBox(
+                        height: 120,
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 4, bottom: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.grey.shade300),
+                          ),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: searchResults.length,
+                            itemBuilder: (c, i) {
+                              final s = searchResults[i];
+                              return ListTile(
+                                dense: true,
+                                title: Text("${s.name} (#${s.rollNo})", style: const TextStyle(fontWeight: FontWeight.bold)),
+                                subtitle: Text("ولدیت: ${s.fatherName} | پارہ: ${s.currentPara}"),
+                                onTap: () {
+                                  setModalState(() {
+                                    selectedStudent = s;
+                                    currentRecord = hifzProv.getStudentHifz(s.id);
+                                    sabaqCtrl.text = currentRecord.sabaq;
+                                    sabqiCtrl.text = currentRecord.sabqi;
+                                    manzilCtrl.text = currentRecord.manzil;
+                                    mistakesCtrl.text = currentRecord.mistakes;
+                                    selectedQuality = currentRecord.quality;
+                                    searchCtrl.clear();
+                                  });
+                                },
+                              );
+                            },
+                          ),
                         ),
                       ),
 
@@ -347,12 +349,7 @@ class _HifzTrackerScreenState extends State<HifzTrackerScreen> {
                           hifzProv.saveHifzEntry(updated);
                           FirebaseCloudSyncService().syncHifzRecordToCloud(
                             date: hifzProv.selectedDate,
-                            studentRoll: selectedStudent.rollNo,
-                            sabaq: sabaqCtrl.text,
-                            sabqi: sabqiCtrl.text,
-                            manzil: manzilCtrl.text,
-                            mistakes: mistakesCtrl.text,
-                            quality: selectedQuality,
+                            record: updated,
                           );
                           Navigator.pop(ctx);
                         },
@@ -452,12 +449,7 @@ class _HifzTrackerScreenState extends State<HifzTrackerScreen> {
                           Provider.of<HifzProvider>(context, listen: false).saveHifzEntry(updated);
                           FirebaseCloudSyncService().syncHifzRecordToCloud(
                             date: Provider.of<HifzProvider>(context, listen: false).selectedDate,
-                            studentRoll: student.rollNo,
-                            sabaq: sabaqCtrl.text,
-                            sabqi: sabqiCtrl.text,
-                            manzil: manzilCtrl.text,
-                            mistakes: mistakesCtrl.text,
-                            quality: selectedQuality,
+                            record: updated,
                           );
                           Navigator.pop(ctx);
                         },

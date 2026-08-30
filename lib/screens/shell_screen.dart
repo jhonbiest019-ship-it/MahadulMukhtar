@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import '../core/constants/app_colors.dart';
 import '../core/constants/app_strings.dart';
-import '../widgets/custom_drawer.dart';
-import 'dashboard/dashboard_screen.dart';
 import 'attendance/attendance_screen.dart';
-import 'absentee/absentee_screen.dart';
-import 'students/student_list_screen.dart';
+import 'hifz/hifz_tracker_screen.dart';
 import 'reports/reports_screen.dart';
-import 'settings/settings_screen.dart';
 
 class ShellScreen extends StatefulWidget {
   const ShellScreen({super.key});
@@ -20,51 +16,39 @@ class _ShellScreenState extends State<ShellScreen> {
   int _currentIndex = 0;
 
   final List<String> _titles = [
-    AppStrings.appTitle,
-    AppStrings.navAttendance,
-    AppStrings.navAbsentees,
-    AppStrings.navStudents,
-    AppStrings.navReports,
-    AppStrings.navSettings,
+    "📋 حاضری ڈیش بورڈ",
+    "📖 سبق، سبقی، منزل و کیفیت",
+    "📊 رپورٹس و تاریخ Log",
   ];
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
-      DashboardScreen(onNavigate: (index) => setState(() => _currentIndex = index)),
       const AttendanceScreen(),
-      const AbsenteeScreen(),
-      const StudentListScreen(),
+      const HifzTrackerScreen(),
       const ReportsScreen(),
-      const SettingsScreen(),
     ];
 
     return Directionality(
-      textDirection: TextDirection.rtl, // RTL layout for Urdu
+      textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            _titles[_currentIndex],
-            style: const TextStyle(fontWeight: FontWeight.bold),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                AppStrings.appTitle,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              Text(
+                _titles[_currentIndex],
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white70),
+              ),
+            ],
           ),
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           elevation: 2,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.mosque),
-              onPressed: () {},
-              tooltip: AppStrings.appTitle,
-            ),
-          ],
-        ),
-        drawer: CustomDrawer(
-          selectedIndex: _currentIndex,
-          onItemSelected: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
         ),
         body: IndexedStack(
           index: _currentIndex,
@@ -86,32 +70,17 @@ class _ShellScreenState extends State<ShellScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.dashboard_outlined),
               activeIcon: Icon(Icons.dashboard),
-              label: AppStrings.navDashboard,
+              label: "حاضری ڈیش بورڈ",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.fact_check_outlined),
-              activeIcon: Icon(Icons.fact_check),
-              label: AppStrings.navAttendance,
+              icon: Icon(Icons.menu_book_outlined),
+              activeIcon: Icon(Icons.menu_book),
+              label: "سبق، سبقی، منزل و کیفیت",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.mark_chat_unread_outlined),
-              activeIcon: Icon(Icons.mark_chat_unread),
-              label: AppStrings.navAbsentees,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.people_outline),
-              activeIcon: Icon(Icons.people),
-              label: AppStrings.navStudents,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.picture_as_pdf_outlined),
-              activeIcon: Icon(Icons.picture_as_pdf),
-              label: AppStrings.navReports,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings_outlined),
-              activeIcon: Icon(Icons.settings),
-              label: AppStrings.navSettings,
+              icon: Icon(Icons.bar_chart_outlined),
+              activeIcon: Icon(Icons.bar_chart),
+              label: "رپورٹس Log",
             ),
           ],
         ),

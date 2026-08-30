@@ -50,7 +50,7 @@ class HifzProvider extends ChangeNotifier {
         _records.add(
           HifzProgressRecord(
             id: 'hifz_${std.id}_$_selectedDate',
-            studentId: std.id,
+            studentId: std.id.toString(),
             date: _selectedDate,
             sabaq: 'پارہ $paraNum، 10 سطریں',
             sabqi: 'پارہ ${paraNum > 1 ? paraNum - 1 : 30} پاؤ 4',
@@ -82,12 +82,13 @@ class HifzProvider extends ChangeNotifier {
     await _prefs.setString(keyHifzRecords, rawJson);
   }
 
-  HifzProgressRecord getStudentHifz(String studentId) {
+  HifzProgressRecord getStudentHifz(dynamic studentId) {
+    final sId = studentId.toString();
     return _records.firstWhere(
-      (r) => r.studentId == studentId && r.date == _selectedDate,
+      (r) => r.studentId == sId && r.date == _selectedDate,
       orElse: () => HifzProgressRecord(
-        id: 'hifz_${studentId}_$_selectedDate',
-        studentId: studentId,
+        id: 'hifz_${sId}_$_selectedDate',
+        studentId: sId,
         date: _selectedDate,
         sabaq: 'پارہ 1',
         sabqi: 'پارہ 1 پاؤ 1',
