@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "name": "almukhtar-islamic-institute",
+  "builds": [
+    {
+      "src": "web_preview/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/web_preview/$1"
+    }
+  ]
+}

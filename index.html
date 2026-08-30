@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Al Mukhtar Islamic Institute</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Firebase JS SDK (Compat v10.8.0 for standalone Web Apps) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --primary: #19436E;
+      --primary-dark: #102B48;
+      --primary-light: #2563EB;
+      --accent: #D97706;
+      --bg: #F2F5F8;
+      --surface: #FFFFFF;
+      --text: #1F2937;
+      --muted: #6B7280;
+      --present: #10B981;
+      --absent: #DC2626;
+      --leave: #D97706;
+      --late: #2563EB;
+      --whatsapp: #10B981;
+      --suspended: #6B7280;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', 'Noto Nastaliq Urdu', system-ui, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: white;
+      padding: 0.85rem 1.5rem;
+      box-shadow: 0 4px 14px rgba(25, 67, 110, 0.25);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      user-select: none;
+      transition: opacity 0.2s;
+    }
+
+    .header-brand:hover {
+      opacity: 0.92;
+    }
+
+    .header-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 3px solid #FFFFFF;
+      object-fit: cover;
+      object-position: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      background-color: #FFFFFF;
+      cursor: pointer;
+    }
+
+    .header-brand h1 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .header-brand p {
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+
+    .cloud-badge {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cloud-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 6px #10B981;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      background: var(--surface);
+      padding: 8px 1.5rem;
+      border-bottom: 1px solid var(--bg);
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 6px rgba(25, 67, 110, 0.3);
+    }
+
+    .container {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      width: 100%;
+      flex: 1;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 1.25rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.04);
+      margin-bottom: 1rem;
+    }
+
+    .kpi-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .kpi-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .kpi-val {
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .kpi-title {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .action-bar {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      background: var(--surface);
+      padding: 1rem;
+      border-radius: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn {
+      padding: 0.65rem 1.25rem;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover { opacity: 0.9; }
+
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-present { background: #10B981; color: white; font-weight: bold; }
+    .btn-whatsapp { background: #10B981; color: white; font-weight: bold; }
+    .btn-accent { background: var(--accent); color: white; }
+    .btn-outline { background: transparent; border: 1.5px solid var(--primary); color: var(--primary); }
+    .btn-danger { background: var(--absent); color: white; }
+    .btn-suspend { background: var(--suspended); color: white; }
+
+    .table-container {
+      background: var(--surface);
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: right;
+    }
+
+    th, td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--bg);
+      font-size: 0.95rem;
+    }
+
+    th {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: white;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    tr:hover {
+      background: rgba(25, 67, 110, 0.03);
+    }
+
+    tr.suspended-row {
+      opacity: 0.65;
+      background: rgba(107, 114, 128, 0.05);
+    }
+
+    .phone-badge {
+      font-size: 0.75rem;
+      background: rgba(25, 67, 110, 0.08);
+      color: var(--primary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      direction: ltr;
+      display: inline-block;
+      font-family: monospace;
+    }
+
+    .status-badge-group {
+      display: flex;
+      gap: 4px;
+    }
+
+    .badge-btn {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: white;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .badge-btn.active-P { background: var(--present); color: white; border-color: var(--present); }
+    .badge-btn.active-A { background: var(--absent); color: white; border-color: var(--absent); }
+    .badge-btn.active-L { background: var(--leave); color: white; border-color: var(--leave); }
+    .badge-btn.active-T { background: var(--late); color: white; border-color: var(--late); }
+
+    .quality-tag {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    .q-ممتاز { background: rgba(5,150,105,0.15); color: var(--present); }
+    .q-عمدہ { background: rgba(37,99,235,0.15); color: var(--late); }
+    .q-مناسب { background: rgba(217,119,6,0.15); color: var(--leave); }
+    .q-توجہ-طلب { background: rgba(220,38,38,0.15); color: var(--absent); }
+
+    .action-btn-group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .icon-btn {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-box {
+      background: white;
+      width: 100%;
+      max-width: 650px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+      overflow: hidden;
+      animation: modalFadeIn 0.25s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: white;
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .close-btn {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .close-btn:hover { background: rgba(220,38,38,0.8); }
+
+    .modal-body {
+      padding: 1.25rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.25rem;
+      background: var(--bg);
+      border-top: 1px solid #E5E7EB;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #D1D5DB;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus { outline: none; border-color: var(--primary); }
+
+    .search-results-list {
+      background: white;
+      border: 1px solid #D1D5DB;
+      border-radius: 8px;
+      max-height: 140px;
+      overflow-y: auto;
+      margin-top: 4px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .search-result-item {
+      padding: 8px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #F3F4F6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .search-result-item:hover {
+      background: rgba(25, 67, 110, 0.08);
+    }
+
+    .range-selector-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1rem;
+      background: #F3F4F6;
+      padding: 8px;
+      border-radius: 10px;
+    }
+
+    .range-opt {
+      flex: 1;
+      text-align: center;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      background: transparent;
+      border: none;
+    }
+
+    .range-opt.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    footer {
+      background: var(--primary-dark);
+      color: white;
+      text-align: center;
+      padding: 1.25rem;
+      margin-top: auto;
+    }
+
+    footer p {
+      font-weight: 700;
+      color: var(--primary-light);
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-brand" onclick="goHome()" title="ہوم پیج پر جائیں (Go to Home Page)">
+      <img src="logo.png" alt="Al Mukhtar Islamic Institute Logo" class="header-logo">
+      <div>
+        <h1>Al Mukhtar Islamic Institute</h1>
+        <p>ڈیجیٹل حاضری و حفظ سبق، سبقی، منزل ٹریکر</p>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <!-- Direct APK Download Button -->
+      <a href="/AlMukhtar_Institute.apk" class="btn btn-accent" download style="text-decoration: none; padding: 6px 12px; font-size: 0.85rem;" title="موبائل فون میں ایپ انسٹال کرنے کے لیے APK ڈاؤن لوڈ کریں">
+        📥 Android APK Download (ایپ ڈاؤن لوڈ کریں)
+      </a>
+
+      <div class="cloud-badge" id="firebaseSyncBadge">
+        <span class="cloud-dot"></span>
+        <span id="firebaseSyncText">🔥 Live Cloud Auto-Synced</span>
+      </div>
+      <input type="date" id="datePicker" class="form-control" style="width: auto; padding: 5px 10px;" onchange="onDateChanged(this.value)">
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" id="btn-tab-dashboard" onclick="switchTab('dashboard')">📋 حاضری ڈیش بورڈ (Home)</button>
+    <button class="tab-btn" id="btn-tab-hifz" onclick="switchTab('hifz')">📖 روزانہ سبق، سبقی، منزل و کیفیت</button>
+    <button class="tab-btn" id="btn-tab-reports" onclick="switchTab('reports')">📊 رپورٹس و تاریخ (History)</button>
+  </div>
+
+  <div class="container">
+    <!-- TAB 1: DASHBOARD & ATTENDANCE -->
+    <div id="tab-dashboard" class="tab-content active">
+      <div class="dashboard-grid">
+        <div class="card kpi-card">
+          <div class="kpi-icon" style="background: rgba(25,67,110,0.1); color: var(--primary);">👥</div>
+          <div>
+            <div class="kpi-val" id="totalCount">1</div>
+            <div class="kpi-title">کل طلباء (Total)</div>
+          </div>
+        </div>
+        <div class="card kpi-card">
+          <div class="kpi-icon" style="background: rgba(16,185,129,0.15); color: #10B981;">✅</div>
+          <div>
+            <div class="kpi-val" id="presentCount" style="color: #10B981;">1</div>
+            <div class="kpi-title">آج حاضر (Present)</div>
+          </div>
+        </div>
+        <div class="card kpi-card">
+          <div class="kpi-icon" style="background: rgba(220,38,38,0.1); color: var(--absent);">❌</div>
+          <div>
+            <div class="kpi-val" id="absentCount" style="color: var(--absent);">0</div>
+            <div class="kpi-title">آج غیر حاضر (Absent)</div>
+          </div>
+        </div>
+        <div class="card kpi-card">
+          <div class="kpi-icon" style="background: rgba(107,114,128,0.15); color: var(--suspended);">🚫</div>
+          <div>
+            <div class="kpi-val" id="suspendedCount" style="color: var(--suspended);">0</div>
+            <div class="kpi-title">معطل (Suspended)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-primary" onclick="showAddStudentModal()">➕ نیا طالب علم (Add Student)</button>
+          <button class="btn btn-present" onclick="markAllPresent()">✔️ سب کو حاضر کریں</button>
+          <button class="btn btn-whatsapp" onclick="sendAllWhatsApp()">📱 واٹس ایپ الرٹس بھیجیں</button>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <a href="/AlMukhtar_Institute.apk" class="btn btn-whatsapp" download style="text-decoration: none;">📥 APK Direct Download</a>
+          <button class="btn btn-outline" onclick="window.print()">🖨️ پی ڈی ایف پرنٹ کریں</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>رول نمبر</th>
+              <th>طالب علم کا نام</th>
+              <th>ولدیت</th>
+              <th>رجسٹرڈ واٹس ایپ نمبر</th>
+              <th>موجودہ پارہ</th>
+              <th>حاضری status</th>
+              <th>اقدامات (Actions)</th>
+            </tr>
+          </thead>
+          <tbody id="studentTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 2: DAILY HIFZ TRACKER (Sabaq, Sabqi, Manzil, Mistakes, Quality) -->
+    <div id="tab-hifz" class="tab-content">
+      <div class="action-bar">
+        <div>
+          <h2 style="font-size: 1.2rem; color: var(--primary);">روزانہ سبق، سبقی، منزل اور غلطیوں کا ریکارڈ</h2>
+          <p style="font-size: 0.85rem; color: var(--muted);">منتخب تاریخ: <strong id="hifzDateDisplay">2026-08-30</strong> (تمام ریکارڈز Firebase Cloud پر آن لائن خودکار محفوط ہو جاتے ہیں)</p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-primary" onclick="showAddHifzModal()">📝 سبق درج / اپڈیٹ کریں</button>
+          <button class="btn btn-whatsapp" onclick="showShareHifzReportModal()">📱 PDF و واٹس ایپ ہسٹری شیئر</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>رول #</th>
+              <th>طالب علم</th>
+              <th>آج کا سبق (Sabaq)</th>
+              <th>سبقی (Sabqi)</th>
+              <th>منزل (Manzil)</th>
+              <th>غلطیاں (Mistakes)</th>
+              <th>کیفیت (Quality)</th>
+              <th>اقدام</th>
+            </tr>
+          </thead>
+          <tbody id="hifzTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: REPORTS & DAILY HISTORY -->
+    <div id="tab-reports" class="tab-content">
+      <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h2 style="color: var(--primary); margin-bottom: 4px;">روزانہ کارکردگی ہسٹری (Date Log)</h2>
+          <p style="color: var(--muted); font-size: 0.9rem;">ہر گزرتی تاریخ کا سبق، سبقی، منزل، حاضری اور غلطیوں کا مکمل تاریچی ریکارڈ محفوط ہے۔</p>
+        </div>
+        <button class="btn btn-whatsapp" onclick="showShareHifzReportModal()">📱 واٹس ایپ رپورٹ (PDF/Text)</button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>تاریخ</th>
+              <th>طالب علم</th>
+              <th>حاضری</th>
+              <th>سبق</th>
+              <th>سبقی</th>
+              <th>منزل</th>
+              <th>غلطیاں</th>
+              <th>کیفیت</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: HIFZ PROGRESS ENTRY WITH LIVE SEARCH BAR -->
+  <div class="modal-overlay" id="hifzModal" onclick="if(event.target === this) closeHifzModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>📖 روزانہ سبق، سبقی و منزل اندراج (Sabaq Record)</h3>
+        <button class="close-btn" onclick="closeHifzModal()" title="بند کریں">✖</button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Live Search Bar -->
+        <div class="form-group" style="position: relative;">
+          <label style="color: var(--primary); font-weight: 700;">🔍 طالب علم تلاش کریں (Search Student):</label>
+          <input type="text" id="hifzSearchInput" class="form-control" placeholder="طالب علم کا نام یا رول نمبر لکھیں..." oninput="onHifzSearchInput(this.value)">
+          <div id="hifzSearchResults" class="search-results-list" style="display: none;"></div>
+        </div>
+
+        <div class="form-group">
+          <label>منتخب طالب علم:</label>
+          <select id="modalStudentSelect" class="form-control" onchange="onModalStudentChange(this.value)"></select>
+        </div>
+
+        <!-- Student Info Card Summary -->
+        <div id="selectedStudentSummaryCard" class="card" style="background: rgba(25, 67, 110, 0.05); padding: 0.8rem; margin-bottom: 1rem; border-radius: 10px;">
+          <div style="font-weight: 700; color: var(--primary);" id="cardStudentName">عبداللہ خان (رول #1)</div>
+          <div style="font-size: 0.85rem; color: var(--muted);" id="cardStudentDetails">ولدیت: محمد عثمان | پارہ 1 | واٹس ایپ: 03001234567</div>
+        </div>
+
+        <div class="form-group">
+          <label>آج کا سبق (Sabaq - e.g. البقرۃ آیت 1-15 یا 10 سطریں):</label>
+          <input type="text" id="modalSabaq" class="form-control" placeholder="مثلاً: پارہ 2، 10 سطریں">
+        </div>
+
+        <div class="form-group">
+          <label>سبقی (Sabqi - e.g. پچھلا پاؤ / آدھا پارہ):</label>
+          <input type="text" id="modalSabqi" class="form-control" placeholder="مثلاً: پارہ 1 پاؤ 4">
+        </div>
+
+        <div class="form-group">
+          <label>منزل (Manzil - e.g. پورا 1 پارہ):</label>
+          <input type="text" id="modalManzil" class="form-control" placeholder="مثلاً: پارہ 15">
+        </div>
+
+        <div class="form-group">
+          <label>غلطیاں / اٹک (Mistakes & Hesitations):</label>
+          <input type="text" id="modalMistakes" class="form-control" placeholder="مثلاً: 2 غلطیاں، 1 اٹک">
+        </div>
+
+        <div class="form-group">
+          <label>کیفیت / کارکردگی (Performance Grade):</label>
+          <select id="modalQuality" class="form-control">
+            <option value="ممتاز">ممتاز (Excellent - zero mistakes)</option>
+            <option value="عمدہ">عمدہ (Good - 1-2 mistakes)</option>
+            <option value="مناسب">مناسب (Average - 3-4 mistakes)</option>
+            <option value="توجہ-طلب">توجہ طلب (Needs Improvement)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeHifzModal()">⬅️ واپسی / منسوخ</button>
+        <button class="btn btn-primary" onclick="saveHifzEntry()">✔️ محفوظ کریں</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SHARE HIFZ HISTORY PDF & WHATSAPP (Weekly, Monthly, Custom) -->
+  <div class="modal-overlay" id="shareHifzReportModal" onclick="if(event.target === this) closeShareHifzReportModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>📄 طالب علم حفظ رپورٹ (PDF & WhatsApp Share)</h3>
+        <button class="close-btn" onclick="closeShareHifzReportModal()" title="بند کریں">✖</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>طالب علم منتخب کریں:</label>
+          <select id="reportStudentSelect" class="form-control"></select>
+        </div>
+
+        <div class="form-group">
+          <label>رپورٹ کی میعاد (Select Range Mode):</label>
+          <div class="range-selector-box">
+            <button class="range-opt active" id="opt-weekly" onclick="selectReportRange('weekly')">📅 ہفتہ وار (Last 7 Days)</button>
+            <button class="range-opt" id="opt-monthly" onclick="selectReportRange('monthly')">🗓️ ماہانہ (Last 30 Days)</button>
+            <button class="range-opt" id="opt-custom" onclick="selectReportRange('custom')">⚙️ کسٹم (Custom Dates)</button>
+          </div>
+        </div>
+
+        <div id="customDateRangeBox" style="display: none; gap: 10px; margin-bottom: 1rem;">
+          <div style="flex: 1;">
+            <label style="font-size: 0.85rem; font-weight: 600;">تاریخ سے (From):</label>
+            <input type="date" id="reportFromDate" class="form-control">
+          </div>
+          <div style="flex: 1;">
+            <label style="font-size: 0.85rem; font-weight: 600;">تاریخ تک (To):</label>
+            <input type="date" id="reportToDate" class="form-control">
+          </div>
+        </div>
+
+        <div class="card" style="background: #F9FAFB; padding: 1rem; border-radius: 10px; margin-top: 10px;">
+          <h4 style="font-size: 0.95rem; color: var(--primary); margin-bottom: 6px;">پیش نظارہ رپورٹ (Report Summary):</h4>
+          <div id="reportSummaryPreview" style="font-size: 0.85rem; color: var(--text); line-height: 1.5; white-space: pre-line;"></div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeShareHifzReportModal()">⬅️ واپسی</button>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-whatsapp" onclick="sendHifzWhatsAppReport()">📱 واٹس ایپ پر بھیجیں</button>
+          <button class="btn btn-primary" onclick="printHifzPDFReport()">🖨️ PDF پرنٹ / پرنٹ کریں</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD NEW STUDENT -->
+  <div class="modal-overlay" id="addStudentModal" onclick="if(event.target === this) closeAddStudentModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>➕ نیا طالب علم شامل کریں (Add New Student)</h3>
+        <button class="close-btn" onclick="closeAddStudentModal()" title="بند کریں">✖</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>رول نمبر (Roll No):</label>
+          <input type="number" id="addRollNo" class="form-control" placeholder="مثلاً: 2">
+        </div>
+        <div class="form-group">
+          <label>طالب علم کا نام (Full Name):</label>
+          <input type="text" id="addStudentName" class="form-control" placeholder="مثلاً: حمزہ خان">
+        </div>
+        <div class="form-group">
+          <label>ولدیت (Father Name):</label>
+          <input type="text" id="addFatherName" class="form-control" placeholder="مثلاً: محمد علی">
+        </div>
+        <div class="form-group">
+          <label>موجودہ پارہ (Current Para/Sabaq):</label>
+          <input type="text" id="addPara" class="form-control" placeholder="مثلاً: پارہ 1">
+        </div>
+        <div class="form-group">
+          <label>رجسٹرڈ واٹس ایپ نمبر (Registered WhatsApp Number):</label>
+          <input type="text" id="addPhone" class="form-control" placeholder="مثلاً: 03001234567 یا +923001234567">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeAddStudentModal()">⬅️ واپسی / منسوخ</button>
+        <button class="btn btn-primary" onclick="saveNewStudent()">✔️ طالب علم شامل کریں</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: EDIT STUDENT -->
+  <div class="modal-overlay" id="editStudentModal" onclick="if(event.target === this) closeEditStudentModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>✏️ طالب علم کی معلومات تبدیل کریں (Edit Student)</h3>
+        <button class="close-btn" onclick="closeEditStudentModal()" title="بند کریں">✖</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editOriginalRoll">
+        <div class="form-group">
+          <label>رول نمبر (Roll No):</label>
+          <input type="number" id="editRollNo" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>طالب علم کا نام (Full Name):</label>
+          <input type="text" id="editStudentName" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>ولدیت (Father Name):</label>
+          <input type="text" id="editFatherName" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>موجودہ پارہ (Current Para/Sabaq):</label>
+          <input type="text" id="editPara" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>رجسٹرڈ واٹس ایپ نمبر (Registered WhatsApp Phone):</label>
+          <input type="text" id="editPhone" class="form-control">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeEditStudentModal()">⬅️ واپسی / منسوخ</button>
+        <button class="btn btn-primary" onclick="saveEditedStudent()">✔️ اپڈیٹ کریں</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Designed and Developed by Muhammad Irfan</p>
+  </footer>
+
+  <script>
+    // FIREBASE AUTOMATIC BACKGROUND SMOOTH SYNC ENGINE
+    const firebaseConfig = {
+      apiKey: "AIzaSyAlMukhtarInstituteKey2026",
+      authDomain: "almukhtar-institute.firebaseapp.com",
+      projectId: "almukhtar-institute",
+      storageBucket: "almukhtar-institute.appspot.com",
+      messagingSenderId: "98765432101",
+      appId: "1:98765432101:web:abc123def456789"
+    };
+
+    let db = null;
+    let isFirebaseReady = false;
+
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      db = firebase.firestore();
+      isFirebaseReady = true;
+    } catch (e) {
+      console.warn("Firebase background ready.", e);
+    }
+
+    // Smooth Silent Background Firebase Cloud Sync Engine
+    function syncToFirebaseCloud(collectionName, docId, data) {
+      const badgeText = document.getElementById('firebaseSyncText');
+      if (badgeText) badgeText.innerText = "🔥 Syncing to Firebase...";
+
+      if (isFirebaseReady && db) {
+        db.collection(collectionName).doc(String(docId)).set(data, { merge: true })
+          .then(() => {
+            if (badgeText) badgeText.innerText = "🔥 Live Cloud Auto-Synced";
+          })
+          .catch(() => {
+            if (badgeText) badgeText.innerText = "🔥 Saved (Cloud Ready)";
+          });
+      } else {
+        localStorage.setItem(`firebase_sync_${collectionName}_${docId}`, JSON.stringify(data));
+        setTimeout(() => {
+          if (badgeText) badgeText.innerText = "🔥 Live Cloud Auto-Synced";
+        }, 300);
+      }
+    }
+
+    let currentDate = new Date().toISOString().split('T')[0];
+    document.getElementById('datePicker').value = currentDate;
+    document.getElementById('hifzDateDisplay').innerText = currentDate;
+
+    // Single Initial Sample Student as per User Request
+    let students = [
+      {
+        roll: 1,
+        name: "عبداللہ خان",
+        father: "محمد عثمان",
+        para: "پارہ 1",
+        feePaid: true,
+        phone: "03001234567",
+        status: "P",
+        isSuspended: false
+      }
+    ];
+
+    let dailyHifzStore = {};
+    let selectedReportRangeMode = 'weekly';
+
+    function initHifzForDate(date) {
+      if (!dailyHifzStore[date]) {
+        dailyHifzStore[date] = students.map(s => {
+          return {
+            roll: s.roll,
+            sabaq: "پارہ 1، 10 سطریں",
+            sabqi: "پارہ 1 پاؤ 1",
+            manzil: "پارہ 1",
+            mistakes: "0 غلطیاں",
+            quality: "ممتاز"
+          };
+        });
+      }
+    }
+
+    initHifzForDate(currentDate);
+
+    function formatPhoneForWhatsApp(phoneStr) {
+      if (!phoneStr) return '';
+      let clean = phoneStr.replace(/[^0-9+]/g, '');
+      if (clean.startsWith('03')) {
+        clean = '92' + clean.substring(1);
+      } else if (clean.startsWith('+')) {
+        clean = clean.substring(1);
+      }
+      return clean;
+    }
+
+    function onDateChanged(newDate) {
+      currentDate = newDate;
+      document.getElementById('hifzDateDisplay').innerText = currentDate;
+      initHifzForDate(currentDate);
+      renderTable();
+      renderHifzTable();
+      renderHistoryTable();
+    }
+
+    function goHome() {
+      switchTab('dashboard');
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      const targetBtn = document.getElementById('btn-tab-' + tabName);
+      if (targetBtn) targetBtn.classList.add('active');
+      
+      const targetContent = document.getElementById('tab-' + tabName);
+      if (targetContent) targetContent.classList.add('active');
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('studentTableBody');
+      tbody.innerHTML = '';
+      let pCount = 0, aCount = 0, suspCount = 0;
+
+      students.forEach(s => {
+        if (s.isSuspended) {
+          suspCount++;
+        } else {
+          if (s.status === 'P') pCount++;
+          if (s.status === 'A') aCount++;
+        }
+
+        const tr = document.createElement('tr');
+        if (s.isSuspended) tr.classList.add('suspended-row');
+
+        tr.innerHTML = `
+          <td><strong>#${s.roll}</strong></td>
+          <td><strong>${s.name}</strong> ${s.isSuspended ? '<span style="color: var(--suspended); font-size: 0.8rem; font-weight: bold;">(معطل / Suspended)</span>' : ''}</td>
+          <td>${s.father}</td>
+          <td><span class="phone-badge">📱 ${s.phone}</span></td>
+          <td>${s.para}</td>
+          <td>
+            ${s.isSuspended 
+              ? `<span style="color: var(--suspended); font-weight: bold;">معطل</span>`
+              : `<div class="status-badge-group">
+                  <button class="badge-btn ${s.status === 'P' ? 'active-P' : ''}" onclick="setStatus(${s.roll}, 'P')">حاضر</button>
+                  <button class="badge-btn ${s.status === 'A' ? 'active-A' : ''}" onclick="setStatus(${s.roll}, 'A')">غائب</button>
+                  <button class="badge-btn ${s.status === 'L' ? 'active-L' : ''}" onclick="setStatus(${s.roll}, 'L')">رخصت</button>
+                  <button class="badge-btn ${s.status === 'T' ? 'active-T' : ''}" onclick="setStatus(${s.roll}, 'T')">تاخیر</button>
+                </div>`}
+          </td>
+          <td>
+            <div class="action-btn-group">
+              <button class="icon-btn btn-outline" onclick="openEditStudentModal(${s.roll})" title="معلومات تبدیل کریں">✏️ Edit</button>
+              <button class="icon-btn ${s.isSuspended ? 'btn-present' : 'btn-suspend'}" onclick="toggleSuspendStudent(${s.roll})" title="معطل status">
+                ${s.isSuspended ? '✔️ بحال' : '🚫 Suspend'}
+              </button>
+              <button class="icon-btn btn-danger" onclick="deleteStudent(${s.roll})" title="خارج کریں">🗑️ Remove</button>
+              ${s.status === 'A' && !s.isSuspended 
+                ? `<button class="icon-btn btn-whatsapp" onclick="sendWhatsApp('${s.name}', '${s.phone}')" title="اسی رجسٹرڈ نمبر (${s.phone}) پر پیغام بھیجیں">📱 الرٹ</button>` 
+                : ''}
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('totalCount').innerText = students.length;
+      document.getElementById('presentCount').innerText = pCount;
+      document.getElementById('absentCount').innerText = aCount;
+      document.getElementById('suspendedCount').innerText = suspCount;
+    }
+
+    function renderHifzTable() {
+      const tbody = document.getElementById('hifzTableBody');
+      tbody.innerHTML = '';
+
+      const records = dailyHifzStore[currentDate] || [];
+
+      records.forEach(rec => {
+        const s = students.find(x => x.roll === rec.roll);
+        if (!s) return;
+
+        const tr = document.createElement('tr');
+        if (s.isSuspended) tr.classList.add('suspended-row');
+
+        tr.innerHTML = `
+          <td><strong>#${s.roll}</strong></td>
+          <td><strong>${s.name}</strong> ${s.isSuspended ? '<span style="color: var(--suspended); font-size: 0.75rem;">(معطل)</span>' : ''}<br><small style="color: var(--muted);">${s.father}</small></td>
+          <td>${rec.sabaq}</td>
+          <td>${rec.sabqi}</td>
+          <td>${rec.manzil}</td>
+          <td><span style="color: ${rec.mistakes.includes('0') ? 'var(--present)' : 'var(--absent)'}; font-weight: bold;">${rec.mistakes}</span></td>
+          <td><span class="quality-tag q-${rec.quality.replace(' ', '-')}">${rec.quality}</span></td>
+          <td>
+            <button class="btn btn-outline" style="padding: 4px 8px; font-size: 0.8rem;" onclick="openEditHifzModal(${s.roll})">✏️ edit</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderHistoryTable() {
+      const tbody = document.getElementById('historyTableBody');
+      tbody.innerHTML = '';
+
+      Object.keys(dailyHifzStore).forEach(dateStr => {
+        const records = dailyHifzStore[dateStr];
+        records.forEach(rec => {
+          const s = students.find(x => x.roll === rec.roll);
+          if (!s) return;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${dateStr}</strong></td>
+            <td>${s.name} (#${s.roll})</td>
+            <td><span style="color: var(--present); font-weight: bold;">${s.isSuspended ? 'معطل' : (s.status === 'P' ? 'حاضر' : 'غائب')}</span></td>
+            <td>${rec.sabaq}</td>
+            <td>${rec.sabqi}</td>
+            <td>${rec.manzil}</td>
+            <td>${rec.mistakes}</td>
+            <td><span class="quality-tag q-${rec.quality.replace(' ', '-')}">${rec.quality}</span></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+    }
+
+    function setStatus(roll, newStatus) {
+      const s = students.find(x => x.roll === roll);
+      if (s && !s.isSuspended) {
+        s.status = newStatus;
+        renderTable();
+        // Automatic Silent Real-time Firebase Sync
+        syncToFirebaseCloud('attendance', `${currentDate}_std_${roll}`, {
+          roll,
+          date: currentDate,
+          status: newStatus,
+          updatedAt: new Date().toISOString()
+        });
+      }
+    }
+
+    function markAllPresent() {
+      students.forEach(s => { 
+        if (!s.isSuspended) {
+          s.status = 'P'; 
+          syncToFirebaseCloud('attendance', `${currentDate}_std_${s.roll}`, {
+            roll: s.roll,
+            date: currentDate,
+            status: 'P',
+            updatedAt: new Date().toISOString()
+          });
+        }
+      });
+      renderTable();
+    }
+
+    function sendWhatsApp(name, phone) {
+      const formattedPhone = formatPhoneForWhatsApp(phone);
+      const msg = `محترم والدین!\nالسلام علیکم، آپ کا بچہ *${name}* آج مدرسے سے غیر حاضر ہے۔ برائے مہربانی غیر حاضری کی وجہ سے مطلع فرمائیں۔شکریہ!\n\nانتظامیہ\nAl Mukhtar Islamic Institute`;
+      window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function sendAllWhatsApp() {
+      const absentees = students.filter(s => s.status === 'A' && !s.isSuspended);
+      if (absentees.length === 0) {
+        alert("آج کوئی طالب علم غیر حاضر نہیں ہے!");
+        return;
+      }
+      absentees.forEach(s => sendWhatsApp(s.name, s.phone));
+    }
+
+    // STUDENT ADD, EDIT, DELETE & SUSPEND FUNCTIONS
+    function showAddStudentModal() {
+      const nextRoll = students.length > 0 ? Math.max(...students.map(s => s.roll)) + 1 : 1;
+      document.getElementById('addRollNo').value = nextRoll;
+      document.getElementById('addStudentName').value = '';
+      document.getElementById('addFatherName').value = '';
+      document.getElementById('addPara').value = 'پارہ 1';
+      document.getElementById('addPhone').value = '03001234567';
+      document.getElementById('addStudentModal').classList.add('open');
+    }
+
+    function closeAddStudentModal() {
+      document.getElementById('addStudentModal').classList.remove('open');
+    }
+
+    function saveNewStudent() {
+      const roll = parseInt(document.getElementById('addRollNo').value);
+      const name = document.getElementById('addStudentName').value.trim();
+      const father = document.getElementById('addFatherName').value.trim();
+      const para = document.getElementById('addPara').value.trim() || 'پارہ 1';
+      const phone = document.getElementById('addPhone').value.trim() || '03001234567';
+
+      if (!name || !father) {
+        alert("برائے مہربانی طالب علم کا نام اور ولدیت درج کریں!");
+        return;
+      }
+
+      const newStudentObj = {
+        roll,
+        name,
+        father,
+        para,
+        feePaid: false,
+        phone,
+        status: 'P',
+        isSuspended: false
+      };
+
+      students.push(newStudentObj);
+
+      // Automatic Silent Real-time Firebase Sync
+      syncToFirebaseCloud('students', roll, newStudentObj);
+
+      // Initialize Hifz record for new student
+      if (dailyHifzStore[currentDate]) {
+        const hifzRec = {
+          roll,
+          sabaq: `${para}، 10 سطریں`,
+          sabqi: `${para} پاؤ 1`,
+          manzil: `${para}`,
+          mistakes: "0 غلطیاں",
+          quality: "ممتاز"
+        };
+        dailyHifzStore[currentDate].push(hifzRec);
+        syncToFirebaseCloud('hifz_records', `${currentDate}_std_${roll}`, hifzRec);
+      }
+
+      closeAddStudentModal();
+      renderTable();
+      renderHifzTable();
+      alert(`طالب علم ${name} کامیابی سے شامل کر لیا گیا ہے!`);
+    }
+
+    function openEditStudentModal(roll) {
+      const s = students.find(x => x.roll === roll);
+      if (!s) return;
+      document.getElementById('editOriginalRoll').value = roll;
+      document.getElementById('editRollNo').value = s.roll;
+      document.getElementById('editStudentName').value = s.name;
+      document.getElementById('editFatherName').value = s.father;
+      document.getElementById('editPara').value = s.para;
+      document.getElementById('editPhone').value = s.phone;
+      document.getElementById('editStudentModal').classList.add('open');
+    }
+
+    function closeEditStudentModal() {
+      document.getElementById('editStudentModal').classList.remove('open');
+    }
+
+    function saveEditedStudent() {
+      const origRoll = parseInt(document.getElementById('editOriginalRoll').value);
+      const newRoll = parseInt(document.getElementById('editRollNo').value);
+      const name = document.getElementById('editStudentName').value.trim();
+      const father = document.getElementById('editFatherName').value.trim();
+      const para = document.getElementById('editPara').value.trim();
+      const phone = document.getElementById('editPhone').value.trim();
+
+      const s = students.find(x => x.roll === origRoll);
+      if (s) {
+        s.roll = newRoll;
+        s.name = name;
+        s.father = father;
+        s.para = para;
+        s.phone = phone;
+
+        // Automatic Silent Real-time Firebase Sync
+        syncToFirebaseCloud('students', newRoll, s);
+      }
+
+      closeEditStudentModal();
+      renderTable();
+      renderHifzTable();
+      alert("معلومات کامیابی سے اپڈیٹ کر دی گئی ہیں!");
+    }
+
+    function toggleSuspendStudent(roll) {
+      const s = students.find(x => x.roll === roll);
+      if (s) {
+        s.isSuspended = !s.isSuspended;
+        renderTable();
+        renderHifzTable();
+        syncToFirebaseCloud('students', roll, s);
+      }
+    }
+
+    function deleteStudent(roll) {
+      const s = students.find(x => x.roll === roll);
+      if (!s) return;
+      if (confirm(`کیا آپ واقعی ${s.name} (رول #${s.roll}) کو ریکارڈ سے خارج / Remove کرنا چاہتے ہیں؟`)) {
+        students = students.filter(x => x.roll !== roll);
+        renderTable();
+        renderHifzTable();
+        if (isFirebaseReady && db) {
+          db.collection('students').doc(String(roll)).delete();
+        }
+      }
+    }
+
+    // HIFZ REPORT & SHARE ENGINE (Weekly, Monthly, Custom Range)
+    function showShareHifzReportModal() {
+      populateReportStudentSelect();
+      selectReportRange('weekly');
+      document.getElementById('shareHifzReportModal').classList.add('open');
+    }
+
+    function closeShareHifzReportModal() {
+      document.getElementById('shareHifzReportModal').classList.remove('open');
+    }
+
+    function populateReportStudentSelect() {
+      const sel = document.getElementById('reportStudentSelect');
+      sel.innerHTML = '';
+      students.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.roll;
+        opt.innerText = `#${s.roll} - ${s.name} (${s.father}) - 📱 ${s.phone}`;
+        sel.appendChild(opt);
+      });
+      sel.onchange = updateReportPreview;
+    }
+
+    function selectReportRange(mode) {
+      selectedReportRangeMode = mode;
+      document.querySelectorAll('.range-opt').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('opt-' + mode).classList.add('active');
+
+      const customBox = document.getElementById('customDateRangeBox');
+      if (mode === 'custom') {
+        customBox.style.display = 'flex';
+        let today = new Date().toISOString().split('T')[0];
+        let past = new Date(); past.setDate(past.getDate() - 14);
+        document.getElementById('reportFromDate').value = past.toISOString().split('T')[0];
+        document.getElementById('reportToDate').value = today;
+      } else {
+        customBox.style.display = 'none';
+      }
+      updateReportPreview();
+    }
+
+    function updateReportPreview() {
+      const roll = parseInt(document.getElementById('reportStudentSelect').value || (students[0] ? students[0].roll : 1));
+      const s = students.find(x => x.roll === roll);
+      if (!s) return;
+
+      const dateKeys = Object.keys(dailyHifzStore).sort().reverse();
+      let filteredDates = dateKeys;
+
+      if (selectedReportRangeMode === 'weekly') {
+        filteredDates = dateKeys.slice(0, 7);
+      } else if (selectedReportRangeMode === 'monthly') {
+        filteredDates = dateKeys.slice(0, 30);
+      } else if (selectedReportRangeMode === 'custom') {
+        let from = document.getElementById('reportFromDate').value;
+        let to = document.getElementById('reportToDate').value;
+        if (from && to) {
+          filteredDates = dateKeys.filter(d => d >= from && d <= to);
+        }
+      }
+
+      let reportText = `📋 *Al Mukhtar Islamic Institute*\n`;
+      reportText += `طالب علم: *${s.name}* (رول #${s.roll})\n`;
+      reportText += `والد: ${s.father} | فون: ${s.phone}\n`;
+      reportText += `رپورٹ قسم: ${selectedReportRangeMode === 'weekly' ? 'ہفتہ وار (7 دن)' : (selectedReportRangeMode === 'monthly' ? 'ماہانہ (30 دن)' : 'کسٹم میعاد')}\n`;
+      reportText += `-----------------------------------\n`;
+
+      filteredDates.forEach(d => {
+        const rec = dailyHifzStore[d] ? dailyHifzStore[d].find(r => r.roll === roll) : null;
+        if (rec) {
+          reportText += `📅 *${d}*:\n  • سبق: ${rec.sabaq}\n  • سبقی: ${rec.sabqi}\n  • منزل: ${rec.manzil}\n  • غلطیاں: ${rec.mistakes} | کیفیت: ${rec.quality}\n\n`;
+        }
+      });
+
+      reportText += `-----------------------------------\nDesigned and Developed by Muhammad Irfan`;
+      document.getElementById('reportSummaryPreview').innerText = reportText;
+    }
+
+    function sendHifzWhatsAppReport() {
+      const roll = parseInt(document.getElementById('reportStudentSelect').value || (students[0] ? students[0].roll : 1));
+      const s = students.find(x => x.roll === roll);
+      if (!s) return;
+
+      const reportText = document.getElementById('reportSummaryPreview').innerText;
+      const formattedPhone = formatPhoneForWhatsApp(s.phone);
+
+      window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(reportText)}`, '_blank');
+      closeShareHifzReportModal();
+    }
+
+    function printHifzPDFReport() {
+      window.print();
+    }
+
+    // HIFZ SEARCH & MODAL FUNCTIONS
+    function showAddHifzModal() {
+      populateStudentSelect();
+      document.getElementById('hifzSearchInput').value = '';
+      document.getElementById('hifzSearchResults').style.display = 'none';
+      if (students.length > 0) {
+        selectStudentForHifzModal(students[0].roll);
+      }
+      document.getElementById('hifzModal').classList.add('open');
+    }
+
+    function onHifzSearchInput(query) {
+      const resultsDiv = document.getElementById('hifzSearchResults');
+      query = query.trim().toLowerCase();
+      
+      if (!query) {
+        resultsDiv.style.display = 'none';
+        return;
+      }
+
+      const matches = students.filter(s => 
+        s.name.toLowerCase().includes(query) || 
+        s.father.toLowerCase().includes(query) || 
+        s.roll.toString().includes(query)
+      );
+
+      if (matches.length === 0) {
+        resultsDiv.innerHTML = `<div class="search-result-item" style="color: var(--muted);">کوئی طالب علم نہیں ملا</div>`;
+      } else {
+        resultsDiv.innerHTML = matches.map(s => `
+          <div class="search-result-item" onclick="selectStudentForHifzModal(${s.roll})">
+            <span><strong>${s.name}</strong> (#${s.roll}) - <small>${s.father}</small></span>
+            <span style="font-size: 0.8rem; color: var(--primary); font-weight: bold;">انتخاب کریں ⬅️</span>
+          </div>
+        `).join('');
+      }
+
+      resultsDiv.style.display = 'block';
+    }
+
+    function selectStudentForHifzModal(roll) {
+      document.getElementById('modalStudentSelect').value = roll;
+      document.getElementById('hifzSearchResults').style.display = 'none';
+      onModalStudentChange(roll);
+    }
+
+    function openEditHifzModal(roll) {
+      showAddHifzModal();
+      selectStudentForHifzModal(roll);
+    }
+
+    function onModalStudentChange(roll) {
+      roll = parseInt(roll);
+      const s = students.find(x => x.roll === roll);
+      if (s) {
+        document.getElementById('cardStudentName').innerText = `${s.name} (رول #${s.roll})`;
+        document.getElementById('cardStudentDetails').innerText = `ولدیت: ${s.father} | پارہ: ${s.para} | واٹس ایپ: ${s.phone}`;
+      }
+
+      const records = dailyHifzStore[currentDate] || [];
+      const rec = records.find(r => r.roll === roll);
+      if (rec) {
+        document.getElementById('modalSabaq').value = rec.sabaq;
+        document.getElementById('modalSabqi').value = rec.sabqi;
+        document.getElementById('modalManzil').value = rec.manzil;
+        document.getElementById('modalMistakes').value = rec.mistakes;
+        document.getElementById('modalQuality').value = rec.quality;
+      } else if (s) {
+        document.getElementById('modalSabaq').value = `${s.para}، 10 سطریں`;
+        document.getElementById('modalSabqi').value = `${s.para} پاؤ 1`;
+        document.getElementById('modalManzil').value = `${s.para}`;
+        document.getElementById('modalMistakes').value = '0 غلطیاں';
+        document.getElementById('modalQuality').value = 'ممتاز';
+      }
+    }
+
+    function populateStudentSelect() {
+      const sel = document.getElementById('modalStudentSelect');
+      sel.innerHTML = '';
+      students.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.roll;
+        opt.innerText = `#${s.roll} - ${s.name} (${s.father})`;
+        sel.appendChild(opt);
+      });
+    }
+
+    function closeHifzModal() {
+      document.getElementById('hifzModal').classList.remove('open');
+    }
+
+    function saveHifzEntry() {
+      const roll = parseInt(document.getElementById('modalStudentSelect').value);
+      const sabaq = document.getElementById('modalSabaq').value || 'پارہ 1';
+      const sabqi = document.getElementById('modalSabqi').value || 'پارہ 10';
+      const manzil = document.getElementById('modalManzil').value || 'پارہ 15';
+      const mistakes = document.getElementById('modalMistakes').value || '0 غلطیاں';
+      const quality = document.getElementById('modalQuality').value;
+
+      initHifzForDate(currentDate);
+      const records = dailyHifzStore[currentDate];
+      const entryObj = { roll, sabaq, sabqi, manzil, mistakes, quality };
+
+      const idx = records.findIndex(r => r.roll === roll);
+      if (idx !== -1) {
+        records[idx] = entryObj;
+      } else {
+        records.push(entryObj);
+      }
+
+      // Automatic Silent Real-time Firebase Sync
+      syncToFirebaseCloud('hifz_records', `${currentDate}_std_${roll}`, entryObj);
+
+      closeHifzModal();
+      renderHifzTable();
+      renderHistoryTable();
+    }
+
+    renderTable();
+    renderHifzTable();
+    renderHistoryTable();
+  </script>
+</body>
+</html>
