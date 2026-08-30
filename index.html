@@ -570,11 +570,6 @@
       </div>
     </div>
     <div class="header-actions">
-      <!-- Direct APK Download Button -->
-      <a href="/AlMukhtar_Institute.apk" class="btn btn-accent" download style="text-decoration: none; padding: 5px 10px; font-size: 0.8rem;" title="موبائل فون میں ایپ انسٹال کرنے کے لیے APK ڈاؤن لوڈ کریں">
-        📥 APK Download
-      </a>
-
       <div class="cloud-badge" id="firebaseSyncBadge">
         <span class="cloud-dot"></span>
         <span id="firebaseSyncText">🔥 Live Cloud Sync</span>
@@ -629,10 +624,6 @@
           <button class="btn btn-primary" onclick="showAddStudentModal()">➕ نیا طالب علم (Add)</button>
           <button class="btn btn-present" onclick="markAllPresent()">✔️ سب کو حاضر کریں</button>
           <button class="btn btn-whatsapp" onclick="sendAllWhatsApp()">📱 واٹس ایپ الرٹس بھیجیں</button>
-        </div>
-        <div style="display: flex; gap: 8px;">
-          <a href="/AlMukhtar_Institute.apk" class="btn btn-whatsapp" download style="text-decoration: none;">📥 APK Download</a>
-          <button class="btn btn-outline" onclick="window.print()">🖨️ پرنٹ</button>
         </div>
       </div>
 
@@ -1059,6 +1050,7 @@
           </td>
           <td>
             <div class="action-btn-group">
+              <button class="icon-btn btn-outline" onclick="printStudentSlip(${s.roll})" title="طالب علم کی سلپ اور حاضری ریکارڈ پرنٹ کریں">🖨️ سلپ</button>
               <button class="icon-btn btn-outline" onclick="openEditStudentModal(${s.roll})" title="معلومات تبدیل کریں">✏️ Edit</button>
               <button class="icon-btn ${s.isSuspended ? 'btn-present' : 'btn-suspend'}" onclick="toggleSuspendStudent(${s.roll})" title="معطل status">
                 ${s.isSuspended ? '✔️ بحال' : '🚫 Suspend'}
@@ -1101,7 +1093,10 @@
           <td><span style="color: ${rec.mistakes.includes('0') ? 'var(--present)' : 'var(--absent)'}; font-weight: bold;">${rec.mistakes}</span></td>
           <td><span class="quality-tag q-${rec.quality.replace(' ', '-')}">${rec.quality}</span></td>
           <td>
-            <button class="btn btn-outline" style="padding: 3px 6px; font-size: 0.78rem;" onclick="openEditHifzModal(${s.roll})">✏️ edit</button>
+            <div style="display: flex; gap: 4px;">
+              <button class="btn btn-outline" style="padding: 3px 6px; font-size: 0.78rem;" onclick="printStudentSlip(${s.roll})" title="طالب علم کی حفظ و کارکردگی سلپ پرنٹ کریں">🖨️ سلپ پرنٹ</button>
+              <button class="btn btn-outline" style="padding: 3px 6px; font-size: 0.78rem;" onclick="openEditHifzModal(${s.roll})">✏️ edit</button>
+            </div>
           </td>
         `;
         tbody.appendChild(tr);
@@ -1176,6 +1171,85 @@
         return;
       }
       absentees.forEach(s => sendWhatsApp(s.name, s.phone));
+    }
+
+    function printStudentSlip(roll) {
+      const s = students.find(x => x.roll === roll);
+      if (!s) return;
+
+      const hifzRec = (dailyHifzStore[currentDate] || []).find(r => r.roll === roll) || {
+        sabaq: 'پارہ 1، 10 سطریں',
+        sabqi: 'پارہ 1 پاؤ 1',
+        manzil: 'پارہ 1',
+        mistakes: '0 غلطیاں',
+        quality: 'ممتاز'
+      };
+
+      const statusText = s.isSuspended ? 'معطل' : (s.status === 'P' ? 'حاضر (Present)' : (s.status === 'A' ? 'غیر حاضر (Absent)' : (s.status === 'L' ? 'رخصت (Leave)' : 'تاخیر (Late)')));
+
+      const slipHtml = `
+        <!DOCTYPE html>
+        <html lang="ur" dir="rtl">
+        <head>
+          <meta charset="UTF-8">
+          <title>طالب علم کارکردگی سلپ - ${s.name}</title>
+          <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+          <style>
+            body { font-family: 'Outfit', 'Noto Nastaliq Urdu', sans-serif; padding: 25px; direction: rtl; text-align: right; background: #fff; color: #1F2937; }
+            .slip-card { border: 2.5px solid #19436E; border-radius: 16px; padding: 25px; max-width: 580px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+            .slip-header { text-align: center; border-bottom: 2px solid #19436E; padding-bottom: 15px; margin-bottom: 20px; }
+            .slip-header h2 { color: #19436E; font-size: 1.5rem; margin-bottom: 6px; font-weight: 700; }
+            .slip-header p { font-size: 0.95rem; color: #4B5563; font-weight: 600; }
+            .info-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+            .info-table td, .info-table th { border: 1.5px solid #D1D5DB; padding: 10px 12px; font-size: 0.95rem; }
+            .info-table th { background: linear-gradient(135deg, #102B48, #19436E); color: #fff; text-align: right; font-weight: 700; }
+            .footer { text-align: center; font-size: 0.82rem; border-top: 1.5px solid #E5E7EB; padding-top: 12px; margin-top: 25px; color: #6B7280; font-weight: 600; }
+          </style>
+        </head>
+        <body>
+          <div class="slip-card">
+            <div class="slip-header">
+              <h2>Al Mukhtar Islamic Institute</h2>
+              <p>روزانہ طالب علم حاضری و حفظ کارکردگی سلپ (Student Performance Slip)</p>
+              <p style="font-size: 0.85rem; color: #19436E;">تاریخ: <strong>${currentDate}</strong></p>
+            </div>
+            <table class="info-table">
+              <tr>
+                <th>رول نمبر:</th><td>#${s.roll}</td>
+                <th>حاضری status:</th><td><strong>${statusText}</strong></td>
+              </tr>
+              <tr>
+                <th>طالب علم کا نام:</th><td><strong>${s.name}</strong></td>
+                <th>ولدیت:</th><td>${s.father}</td>
+              </tr>
+              <tr>
+                <th>موجودہ پارہ:</th><td>${s.para}</td>
+                <th>واٹس ایپ نمبر:</th><td>${s.phone}</td>
+              </tr>
+              <tr>
+                <th>آج کا سبق (Sabaq):</th><td colspan="3"><strong>${hifzRec.sabaq}</strong></td>
+              </tr>
+              <tr>
+                <th>سبقی (Sabqi):</th><td>${hifzRec.sabqi}</td>
+                <th>منزل (Manzil):</th><td>${hifzRec.manzil}</td>
+              </tr>
+              <tr>
+                <th>غلطیاں (Mistakes):</th><td><strong style="color: ${hifzRec.mistakes.includes('0') ? '#10B981' : '#DC2626'}">${hifzRec.mistakes}</strong></td>
+                <th>کیفیت (Quality):</th><td><strong>${hifzRec.quality}</strong></td>
+              </tr>
+            </table>
+            <div class="footer">
+              <p>Designed and Developed by Muhammad Irfan | Al Mukhtar Islamic Institute</p>
+            </div>
+          </div>
+          <script>window.onload = function() { window.print(); };<\/script>
+        </body>
+        </html>
+      `;
+
+      const win = window.open('', '_blank', 'width=650,height=750');
+      win.document.write(slipHtml);
+      win.document.close();
     }
 
     // STUDENT ADD, EDIT, DELETE & SUSPEND FUNCTIONS
