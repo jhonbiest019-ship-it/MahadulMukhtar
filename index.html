@@ -1165,7 +1165,7 @@
 
     function sendWhatsApp(name, phone) {
       const formattedPhone = formatPhoneForWhatsApp(phone);
-      const msg = `محترم والدین!\nالسلام علیکم، آپ کا بچہ ${name} آج مدرسے سے غیر حاضر ہے۔ برائے مہربانی غیر حاضری کی وجہ سے مطلع فرمائیں۔شکریہ!\n\nانتظامیہ\nAl Mukhtar Islamic Institute`;
+      const msg = `محترم والدین!\nالسلام علیکم، آپ کا بچہ ${name} آج مدرسے سے غیر حاضر ہے۔ برائے مہربانی غیر حاضری کی وجہ سے مطلع فرمائیں۔شکریہ!\nانتظامیہ\nAl Mukhtar Islamic Institute`;
       window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
